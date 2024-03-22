@@ -1,30 +1,21 @@
-import {Hono} from 'hono'
+import {Hono, MiddlewareHandler} from 'hono'
 import { verify } from 'hono/jwt'
 
-const middleware = new Hono<{
-    Bindings: {
-        DATABASE_URL: string,
-        JWT_SECRET: string
-    },
-    Variables:{
-        userId: string
-    }
-}>()
 
-middleware.use("/*", async (c, next) => {
-    const authHeader = c.req.header("authorization")
+export const authMiddleware: MiddlewareHandler = async (c, next) => {
+    const authHeader = c.req.header("Authorization")
     const user = await verify(authHeader || "",c.env?.JWT_SECRET)
+    console.log('user',user)
     if(user){
-        c.set("userId", user.id)
-        next()
+        c.set("userId", user.payload)
+        await next()
     } else {
         c.status(403)
         c.json({
             message: "You are not logged in"
         })
     }
-})
+}
 
-export default middleware
 
 
