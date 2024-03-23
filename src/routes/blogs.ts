@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
 import { verify } from "hono/jwt";
 import { authMiddleware } from "../middleware";
+import { blogSchema, blogupdateSchema } from "@parasbarde/zod-validation";
 
 
 const blogApp = new Hono<{
@@ -35,18 +36,25 @@ blogApp.post("/create", authMiddleware, async (c) => {
         datasourceUrl: c.env?.DATABASE_URL,
     }).$extends(withAccelerate());
     const body = await c.req.json();
+    const {success} = blogSchema.safeParse(body)
     const userId = c.get("userId")
-    const blog = await prisma.blog.create({
-        data: {
-            title: body.title,
-            content: body.content,
-            authorId: parseInt(userId)
-        }
-    })
+    if (!success) {
+        c.status(411)
+        return c.json("Input worngs")
+    } else {
+        const blog = await prisma.blog.create({
+            data: {
+                title: body.title,
+                content: body.content,
+                authorId: parseInt(userId)
+            }
+        })
+    
+        return c.json({
+            id: blog.id
+        })
+    }
 
-    return c.json({
-        id: blog.id
-    })
 })
 
 blogApp.put("/", authMiddleware, async (c) => {
@@ -54,21 +62,28 @@ blogApp.put("/", authMiddleware, async (c) => {
         datasourceUrl: c.env?.DATABASE_URL,
     }).$extends(withAccelerate());
     const body = await c.req.json();
+    const {success} = blogupdateSchema.safeParse(body)
     const userId = c.get("userId")
-    const blog = await prisma.blog.update({
-        where: {
-            id: body.id,
-            authorId: Number(userId)
-        },
-        data: {
-            title: body.title,
-            content: body.content
-
-        }
-    })
-    return c.json({
-        id: blog.id
-    })
+    if (!success) {
+        c.status(411)
+        return c.json("Input worngs")
+    } else {
+        const blog = await prisma.blog.update({
+            where: {
+                id: body.id,
+                authorId: Number(userId)
+            },
+            data: {
+                title: body.title,
+                content: body.content
+    
+            }
+        })
+        return c.json({
+            id: blog.id
+        })
+    }
+ 
 })
 
 
