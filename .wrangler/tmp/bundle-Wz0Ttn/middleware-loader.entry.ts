@@ -4,7 +4,7 @@
 // // through wrangler, or we can potentially let users directly add them as a sort
 // // of "plugin" system.
 
-import worker from "D:\\My_Work\\Full Stack Application\\hono-boilerplate\\.wrangler\\tmp\\bundle-qSXc44\\middleware-insertion-facade.js";
+import worker from "D:\\My_Work\\Full Stack Application\\hono-boilerplate\\.wrangler\\tmp\\bundle-Wz0Ttn\\middleware-insertion-facade.js";
 import {
 	__facade_invoke__,
 	__facade_register__,
@@ -13,7 +13,7 @@ import {
 } from "D:\\My_Work\\Full Stack Application\\hono-boilerplate\\node_modules\\wrangler\\templates\\middleware\\common.ts";
 
 // We need to preserve all of the exports from the worker
-export * from "D:\\My_Work\\Full Stack Application\\hono-boilerplate\\.wrangler\\tmp\\bundle-qSXc44\\middleware-insertion-facade.js";
+export * from "D:\\My_Work\\Full Stack Application\\hono-boilerplate\\.wrangler\\tmp\\bundle-Wz0Ttn\\middleware-insertion-facade.js";
 
 class __Facade_ScheduledController__ implements ScheduledController {
 	#noRetry: ScheduledController["noRetry"];

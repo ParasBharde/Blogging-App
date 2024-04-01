@@ -109,8 +109,10 @@ blogApp.get('/bulk', async (c) => {
     const prisma = new PrismaClient({
         datasourceUrl: c.env?.DATABASE_URL,
     }).$extends(withAccelerate());
-
-    const data = await prisma.blog.findMany({})
+    let page = Number(c.req.query('page')) || 1;
+    let limit = Number(c.req.query('limit')) || 3;
+    let skip = (page - 1) *  limit;
+    const data = await prisma.blog.findMany({skip, take:limit})
     return c.json({
         data
     })
